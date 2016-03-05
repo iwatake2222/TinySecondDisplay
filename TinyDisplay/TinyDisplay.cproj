@@ -1,0 +1,277 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
+  <PropertyGroup>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>7.0</ProjectVersion>
+    <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
+    <ProjectGuid>dce6c7e3-ee26-4d79-826b-08594b9ad897</ProjectGuid>
+    <avrdevice>ATmega328P</avrdevice>
+    <avrdeviceseries>none</avrdeviceseries>
+    <OutputType>Executable</OutputType>
+    <Language>C</Language>
+    <OutputFileName>$(MSBuildProjectName)</OutputFileName>
+    <OutputFileExtension>.elf</OutputFileExtension>
+    <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
+    <AssemblyName>TinyDisplay</AssemblyName>
+    <Name>TinyDisplay</Name>
+    <RootNamespace>TinyDisplay</RootNamespace>
+    <ToolchainFlavour>Native</ToolchainFlavour>
+    <KeepTimersRunning>true</KeepTimersRunning>
+    <OverrideVtor>false</OverrideVtor>
+    <CacheFlash>true</CacheFlash>
+    <ProgFlashFromRam>true</ProgFlashFromRam>
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
+    <UncachedRange />
+    <preserveEEPROM>true</preserveEEPROM>
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <BootSegment>2</BootSegment>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
+    <AsfFrameworkConfig>
+      <framework-data xmlns="">
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.30.1" />
+        </dependencies>
+      </framework-data>
+    </AsfFrameworkConfig>
+    <avrtool>com.atmel.avrdbg.tool.stk500</avrtool>
+    <avrtoolserialnumber />
+    <avrdeviceexpectedsignature>0x1E950F</avrdeviceexpectedsignature>
+    <com_atmel_avrdbg_tool_stk500>
+      <ToolOptions>
+        <InterfaceProperties>
+          <IspClock>125000</IspClock>
+        </InterfaceProperties>
+        <InterfaceName>ISP</InterfaceName>
+      </ToolOptions>
+      <ToolType>com.atmel.avrdbg.tool.stk500</ToolType>
+      <ToolNumber>
+      </ToolNumber>
+      <ToolName>STK500</ToolName>
+    </com_atmel_avrdbg_tool_stk500>
+    <avrtoolinterface>ISP</avrtoolinterface>
+    <avrtoolinterfaceclock>125000</avrtoolinterfaceclock>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atmega328p -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\gcc\dev\atmega328p"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>NDEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\include</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\include</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <ToolchainSettings>
+      <AvrGcc>
+        <avrgcc.common.Device>-mmcu=atmega328p -B "%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\gcc\dev\atmega328p"</avrgcc.common.Device>
+        <avrgcc.common.outputfiles.hex>True</avrgcc.common.outputfiles.hex>
+        <avrgcc.common.outputfiles.lss>True</avrgcc.common.outputfiles.lss>
+        <avrgcc.common.outputfiles.eep>True</avrgcc.common.outputfiles.eep>
+        <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
+        <avrgcc.common.outputfiles.usersignatures>False</avrgcc.common.outputfiles.usersignatures>
+        <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
+        <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+        <avrgcc.compiler.symbols.DefSymbols>
+          <ListValues>
+            <Value>DEBUG</Value>
+          </ListValues>
+        </avrgcc.compiler.symbols.DefSymbols>
+        <avrgcc.compiler.directories.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\include</Value>
+          </ListValues>
+        </avrgcc.compiler.directories.IncludePaths>
+        <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
+        <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+        <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+        <avrgcc.compiler.optimization.DebugLevel>Default (-g2)</avrgcc.compiler.optimization.DebugLevel>
+        <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
+        <avrgcc.linker.libraries.Libraries>
+          <ListValues>
+            <Value>libm</Value>
+          </ListValues>
+        </avrgcc.linker.libraries.Libraries>
+        <avrgcc.assembler.general.IncludePaths>
+          <ListValues>
+            <Value>%24(PackRepoDir)\atmel\ATmega_DFP\1.0.98\include</Value>
+          </ListValues>
+        </avrgcc.assembler.general.IncludePaths>
+        <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
+      </AvrGcc>
+    </ToolchainSettings>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="application\fpsCheck.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="application\moviePlayer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="application\tinyDisplay.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="charLcd\charLcd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="charLcd\charLcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="charLcd\charLcdConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="color\colorRGB.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="font\font.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="font\font.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcdST7735R_SPI\lcdST7735R_CMD.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcdST7735R_SPI\lcdST7735R_SPI.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcdST7735R_SPI\lcdST7735R_SPI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcdST7735R_SPI\lcdST7735R_SPIConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lcdST7735R_SPI\lcdST7735R_SPIText.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myCommon.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myRetarget.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myStdio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myStdio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myTimer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myTimer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myVideo.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myVideo.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\diskio.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\ff.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\ff.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\ffconf.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\integer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\petitFatFSConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\sdmmc_gpio.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="petitFatFS\sdmmc_spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi\spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi\spi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi\spiConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer0System\timer0System.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="timer0System\timer0System.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart0\uart0.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart0\uart0.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="uart0\uart0Config.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="petitFatFS\00history.txt">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="petitFatFS\00readme.txt">
+      <SubType>compile</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="charLcd" />
+    <Folder Include="myLibraries" />
+    <Folder Include="lcdST7735R_SPI" />
+    <Folder Include="font" />
+    <Folder Include="color" />
+    <Folder Include="application" />
+    <Folder Include="petitFatFS" />
+    <Folder Include="spi" />
+    <Folder Include="timer0System" />
+    <Folder Include="uart0" />
+  </ItemGroup>
+  <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
+</Project>
