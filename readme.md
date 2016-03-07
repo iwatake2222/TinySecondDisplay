@@ -29,6 +29,9 @@ This is a very tiny display to duplicate your PC screen.
 * UART Baudrate is 2,000,000 bps
 
 
+## Software Structure
+![Software Structure](01_doc/TinyDisplaySoftwareStructure.jpg)
+
 
 ## Portmap
 ```
