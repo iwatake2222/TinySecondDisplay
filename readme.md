@@ -1,10 +1,11 @@
 # Tiny Second Display
 
-This is a very tiny display to duplicate your PC screen.
-
+This is a very tiny display to clone your PC screen.
 ![Big picture](01_doc/TinyDisplayBigPicture.jpg)
-![picture](01_doc/picture_00.jpg)
-![picture](01_doc/picture_01.jpg)
+Link to youtube is bellow:  
+[![Youtube](http://img.youtube.com/vi/grzDsh2M5ko/0.jpg)](http://www.youtube.com/watch?v=grzDsh2M5ko)
+<img src="01_doc/picture_00.jpg" alt="代替テキスト" height="300px">
+<img src="01_doc/picture_01.jpg" alt="代替テキスト" height="300px">
 
 ## Environment
 * Atmel Studio 7.0
