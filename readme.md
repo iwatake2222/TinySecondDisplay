@@ -3,8 +3,9 @@
 This is a very tiny display to duplicate your PC screen.
 
 ![Big picture](01_doc/TinyDisplayBigPicture.jpg)
-![picture](01_doc/picture_00.jpg)
-![picture](01_doc/picture_01.jpg)
+<img src="01_doc/picture_00.jpg" alt="代替テキスト" height="300px">
+<img src="01_doc/picture_01.jpg" alt="代替テキスト" height="300px">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/grzDsh2M5ko" frameborder="0" allowfullscreen></iframe>
 
 ## Environment
 * Atmel Studio 7.0
