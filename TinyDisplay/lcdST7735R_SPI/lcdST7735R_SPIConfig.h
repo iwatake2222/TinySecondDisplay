@@ -9,14 +9,14 @@
 #ifndef LCDST7735R_SPICONFIG_H_
 #define LCDST7735R_SPICONFIG_H_
 
-/*** definitions (do not modify here) ***/
+/*** definitions (do not modify this section) ***/
 #define LCD_ST7735R_ROTATE_0 0
 #define LCD_ST7735R_ROTATE_90 1
 #define LCD_ST7735R_ROTATE_180 2
 #define LCD_ST7735R_ROTATE_270 3
 
 
-/*** configure (modify here depending on environment) ***/
+/*** configure (modify this section depending on environment) ***/
 /* io settings */
 #define LCD_ST7735R_SPI_CS_PORT PORTB
 #define LCD_ST7735R_SPI_DC_PORT PORTB
@@ -38,7 +38,9 @@
 
 /* text settings */
 #define TEXT_AREA_ORIGIN_X 0
-#define TEXT_AREA_ORIGIN_Y 128
+// for video
+#define TEXT_AREA_ORIGIN_Y 128	
+//#define TEXT_AREA_ORIGIN_Y 0
 // actual end position is the below number -1
 #define TEXT_AREA_END_X 128
 #define TEXT_AREA_END_Y 160
@@ -47,7 +49,7 @@
 #define FONT_HEIGHT 8
 #define FONT_DISPLAY_SIZE 2
 #define TEXT_AREA_BACKGROUND (0x0000)
-#define TEXT_AREA_FOREGROUND ((uint16_t)0xF81F)
+#define TEXT_AREA_FOREGROUND ((uint16_t)0x001F)
 
 
 

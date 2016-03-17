@@ -11,49 +11,20 @@
 #include "charLcdConfig.h"
 #include "charLcd.h"
 
+/*** Internal Const Values ***/
+/*** Internal Static Variables ***/
 static uint8_t s_charLcdCurrentRow = 0;
 static uint8_t s_charLcdCurrentCol = 0;
-static uint8_t s_savedPosX;
-static uint8_t s_savedPosY;
+static uint8_t s_savedPosX = 0;
+static uint8_t s_savedPosY = 0;
 
+/*** Internal Function Declarations ***/
+static void charLcdPortInit();
+static void charLcdLatch();
+static void charLcdSendCmd(uint8_t data);
+static void charLcdSendData(uint8_t data);
 
-void charLcdPortInit()
-{
-	SET_BIT(CHAR_LCD_EN_DDR, CHAR_LCD_EN_BIT);
-	SET_BIT(CHAR_LCD_RS_DDR, CHAR_LCD_RS_BIT);
-	SET_VAL(CHAR_LCD_D_DDR, CHAR_LCD_D_BIT, 4, 0x0F);
-
-	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
-	CLR_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
-	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, 0x00);
-
-}
-
-static void charLcdLatch() {
-	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
-	SET_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
-	_delay_us(1);
-	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
-}
-
-static void charLcdSendCmd(uint8_t data) {
-	CLR_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
-	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, (data>>4)&0x0f);
-	charLcdLatch();
-	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, data&0x0f);
-	charLcdLatch();
-	_delay_us(40);
-}
-
-static void charLcdSendData(uint8_t data) {
-	SET_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
-	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, (data>>4)&0x0f);
-	charLcdLatch();
-	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, data&0x0f);
-	charLcdLatch();
-	_delay_us(40);
-}
-
+/*** External Function Defines ***/
 void charLcdInit()
 {
 	_delay_ms(15);
@@ -113,7 +84,6 @@ void charLcdClear()
 	s_charLcdCurrentCol = 0;
 }
 
-
 void charLcdPutchar(const uint8_t c)
 {
 	if(s_charLcdCurrentCol >= CHAR_LCD_COL){
@@ -132,3 +102,42 @@ void charLcdPutchar(const uint8_t c)
 	s_charLcdCurrentCol++;
 }
 
+/*** Internal Function Definitions ***/
+static void charLcdPortInit()
+{
+	SET_BIT(CHAR_LCD_EN_DDR, CHAR_LCD_EN_BIT);
+	SET_BIT(CHAR_LCD_RS_DDR, CHAR_LCD_RS_BIT);
+	SET_VAL(CHAR_LCD_D_DDR, CHAR_LCD_D_BIT, 4, 0x0F);
+	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
+	CLR_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
+	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, 0x00);
+
+}
+
+static void charLcdLatch()
+{
+	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
+	SET_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
+	_delay_us(1);
+	CLR_BIT(CHAR_LCD_EN_PORT, CHAR_LCD_EN_BIT);
+}
+
+static void charLcdSendCmd(uint8_t data)
+{
+	CLR_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
+	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, (data>>4)&0x0f);
+	charLcdLatch();
+	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, data&0x0f);
+	charLcdLatch();
+	_delay_us(40);
+}
+
+static void charLcdSendData(uint8_t data)
+{
+	SET_BIT(CHAR_LCD_RS_PORT, CHAR_LCD_RS_BIT);
+	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, (data>>4)&0x0f);
+	charLcdLatch();
+	SET_VAL(CHAR_LCD_D_PORT, CHAR_LCD_D_BIT, 4, data&0x0f);
+	charLcdLatch();
+	_delay_us(40);
+}

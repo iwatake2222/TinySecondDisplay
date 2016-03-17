@@ -7,62 +7,65 @@
 #include <avr/io.h>
 #include "../myCommon.h"
 #include <util/delay.h>
-
 #include "../myLibraries/myStdio.h"
 #include "../myLibraries/myTimer.h"
 #include "../myLibraries/myVideo.h"
 #include "../color/colorRGB.h"
-#include "../petitFatFS/ff.h"		/* Declarations of FatFs API */
+#include "../petitFatFS/ff.h"
 
-
+/*** Internal Const Values ***/
 #define WIDTH  128
 #define HEIGHT 128
 
+/*** Internal Static Variables ***/
+static FATFS FatFs;
+static FIL Fil;
+
+/*** Internal Function Declarations ***/
 static void drawFile(char* filename);
 static void drawFileLineBuff(char* filename);
 static uint8_t getNextFile(DIR *dir, char *filename);
 static uint8_t getNextDir(DIR *dir, char *dirname);
 static uint8_t isSkip();
 
-FATFS FatFs;
-FIL Fil;
-
-
-void moviePlayer()
+/*** External Function Defines ***/
+void moviePlayerInit()
 {
 	f_mount(0, "", 0);
-	f_mount(&FatFs, "", 0);		/* Give a work area to the default drive */
-
-	while(1) {
-		DIR dirRoot;
-		char dirname[14];
-		uint8_t ret = f_opendir(&dirRoot, "/");
-		if(ret != 0) printDec(ret);
-		while(getNextDir(&dirRoot, dirname) > 0) {
-			//printPos("          ", 0, 0);
-			//printPos(dirname, 0, 0);
-			f_chdir(dirname);
-			DIR dir;
-			char filename[14];
-			f_opendir(&dir, "");
-			while(getNextFile(&dir, filename) > 0) {
-				printPos("          ", 0, 0);
-				printPos(filename, 0, 0);
-				drawFileLineBuff(filename);
-				//drawFile(filename);
-				//getchar();
-				if(isSkip() != 0) break;	
-			}
-			f_closedir(&dir);
-			f_chdir("/");
-		}
-		f_closedir(&dirRoot);
-	}
+	f_mount(&FatFs, "", 0);		/* Give a work area to the default drive */		
 }
 
+void moviePlayerLoop()
+{
+	DIR dirRoot;
+	char dirname[14];
+	uint8_t ret = f_opendir(&dirRoot, "/");
+	if(ret != 0) printDec(ret);
+	while(getNextDir(&dirRoot, dirname) > 0) {
+		//printPos("          ", 0, 0);
+		//printPos(dirname, 0, 0);
+		f_chdir(dirname);
+		DIR dir;
+		char filename[14];
+		f_opendir(&dir, "");
+		while(getNextFile(&dir, filename) > 0) {
+			printPos("          ", 0, 0);
+			printPos(filename, 0, 0);
+			drawFileLineBuff(filename);
+			//drawFile(filename);
+			//getchar();
+			if(isSkip() != 0) break;	
+		}
+		f_closedir(&dir);
+		f_chdir("/");
+	}
+	f_closedir(&dirRoot);
+}
+
+/*** Internal Function Definitions ***/
 static uint8_t isSkip()
 {
-	uint8_t key;
+	char key;
 	uint8_t isInput = getcharTry(&key);
 	if(isInput != 0) {
 		if( key == 'n' ) return 1;
@@ -71,7 +74,6 @@ static uint8_t isSkip()
 	return 0;
 	
 }
-
 
 static void drawFile(char* filename)
 {

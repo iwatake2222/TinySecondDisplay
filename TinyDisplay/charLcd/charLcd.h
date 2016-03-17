@@ -9,6 +9,21 @@
 #ifndef CHARLCD_H_
 #define CHARLCD_H_
 
+/***
+ * Const values
+ ***/
+
+/***
+ * Enum definitions
+ ***/
+
+/***
+ * Struct definitions
+ ***/
+
+/***
+ * External APIs
+ ***/
 void charLcdInit();
 void charLcdPutchar(const uint8_t c);
 void charLcdPosition(const uint8_t x, const uint8_t y);

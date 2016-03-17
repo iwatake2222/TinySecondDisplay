@@ -87,7 +87,7 @@ static void lcdST7735R_drawChar(char c) {
 				for(uint8_t size = 0; size < FONT_DISPLAY_SIZE; size++){
 					if (line & 0x1) {
 						lcdST7735R_sendBurstData(TEXT_AREA_FOREGROUND >> 8, TEXT_AREA_FOREGROUND);
-						} else {
+					} else {
 						lcdST7735R_sendBurstData(TEXT_AREA_BACKGROUND >> 8, TEXT_AREA_BACKGROUND);
 					}
 				}

@@ -11,9 +11,11 @@
 #ifndef CHRALCDCONFIG_H_
 #define CHRALCDCONFIG_H_
 
+/* device settings */
 static const int CHAR_LCD_ROW = 2;
 static const int CHAR_LCD_COL = 16;
 
+/* io settings */
 /*
  * EN = PORTC4
  * RS = PORTC5

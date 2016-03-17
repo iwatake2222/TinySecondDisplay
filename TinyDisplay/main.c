@@ -9,49 +9,69 @@
 #include "myCommon.h"
 #include <util/delay.h>
 
+#include "./system/taskManager.h"
 #include "./myLibraries/myStdio.h"
 #include "./myLibraries/myTimer.h"
 #include "./myLibraries/myVideo.h"
-#include "./color/colorRGB.h"
+#include "./myLibraries/myInput.h"
+#include "./application/application.h"
 
-static void init();
+/*** Internal Const Values ***/
 
-extern void tinyDisplay();
-extern void fpsCheck();
-extern void fpsCheckWithBuffer();
-extern void moviePlayer();
+/*** Internal Static Variables ***/
 
+/*** Internal Function Declarations ***/
+static void librariesInit();
+static void librariesLoop();
+static void testEchoBack();
 
+/*** External Function Defines ***/
 int main(void)
 {
-	init();
+	/* register tasks */
+	registerInit(librariesInit);
+	registerLoop(librariesLoop);
+	registerLoop(testEchoBack);
+	//registerInit(deviceTrialInit);
+	//registerLoop(deviceTrialLoop);
+	//registerInit(fpsCheckInit);
+	//registerLoop(fpsCheckLoop);
+	//registerInit(moviePlayerInit);
+	//registerLoop(moviePlayerLoop);
+	registerInit(tinyDisplayInit);
+	registerLoop(tinyDisplayLoop);
+
+	/* call all initializations */
+	systemInit();
+	
 	print("Hello");
 
-	tinyDisplay();
-	//fpsCheckWithBuffer();
-	//moviePlayer();
-
-	while(1);
-	while(1){
-		putchar(getchar());
-	}
-
+	/* call main loop */
+	systemLoop();	
 }
 
-static void init()
-{
-	/* portInit */
-	/*
-	SET_BIT(DDRB, DDB5);
-	CLR_BIT(PORTB, PORTB5);
-	CLR_BIT(DDRB, DDB4);
-	SET_BIT(PORTB, PORTB4);	
-	*/
 
+/*** Internal Function Definitions ***/
+static void librariesInit()
+{
+	sei();	//SET_BIT(SREG, SREG_I);
 	timerInit();
 	stdioInit();
-	videoInit();
-	
-	sei();	//SET_BIT(SREG, SREG_I);
+	inputInit();
+	videoInit();	
+}
+
+static void librariesLoop()
+{
+	timerLoop();
+}
+
+
+static void testEchoBack()
+{
+	char c;
+	if(getcharTry(&c) == RET_OK)putchar(c);
+
+	//printDec(getCurrentProcessingTime());		
 }
 

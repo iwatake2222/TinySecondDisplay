@@ -2,7 +2,7 @@
  * spiConfig.h
  *
  * Created: 2016-03-04 10:52:33 PM
- *  Author: user
+ *  Author: take-iwiw
  */ 
 
 
@@ -15,6 +15,6 @@
 #define SPI_MISO_BIT 4
 #define SPI_SCK_BIT  5
 
-#define SOFTWARE_BUFFER_SIZE 256
+#define SOFTWARE_BUFFER_SIZE 4
 
 #endif /* SPICONFIG_H_ */

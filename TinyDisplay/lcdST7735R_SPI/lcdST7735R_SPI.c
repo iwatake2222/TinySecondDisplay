@@ -4,36 +4,46 @@
  * Created: 2016-03-03 11:14:38 PM
  *  Author: take-iwiw
  *        : initial sequence is retrieved from some samples
+ *   Note : cannot use spiSendFast(buffer mode) because of CS, RS control
  */ 
 #include <avr/io.h>
 #include "../myCommon.h"
 #include <util/delay.h>
-
 #include "lcdST7735R_SPIConfig.h"
 #include "lcdST7735R_SPI.h"
 #include "lcdST7735R_CMD.h"
 #include "../spi/spi.h"
 
+/*** Internal Const Values, Macros ***/
 #define DISABLE_LCD_CS (SET_BIT(LCD_ST7735R_SPI_CS_PORT, LCD_ST7735R_SPI_CS_BIT))
 #define ENABLE_LCD_CS  (CLR_BIT(LCD_ST7735R_SPI_CS_PORT, LCD_ST7735R_SPI_CS_BIT))
 #define SET_LCD_DATA   (SET_BIT(LCD_ST7735R_SPI_DC_PORT, LCD_ST7735R_SPI_DC_BIT))
 #define SET_LCD_CMD    (CLR_BIT(LCD_ST7735R_SPI_DC_PORT, LCD_ST7735R_SPI_DC_BIT))
 
+/*** Internal Static Variables ***/
+static uint8_t s_isInitialized = 0;
+
+/*** Internal Function Declarations ***/
 static void intLcd();
 static void sendCmd(uint8_t cmd);
 static void sendData(uint8_t data);
 
-static uint8_t isInitialized = 0;
-
+/*** External Function Defines ***/
 void lcdST7735R_init()
 {
-	if(isInitialized != 0) return;
-	isInitialized = 1;
+	if(s_isInitialized != 0) return;
+	s_isInitialized = 1;
 	// PORT DDR
 	SET_BIT(LCD_ST7735R_SPI_DC_DDR, LCD_ST7735R_SPI_DC_BIT);	// DC
 	SET_BIT(LCD_ST7735R_SPI_CS_DDR, LCD_ST7735R_SPI_CS_BIT);	// CS
 	// init SPI
-	spiOpen(0, 1, SPI_MODE0, SPI_DIV_4, SPI_SPEED_2X);
+	SPI_OPEN_PRM prm;
+	prm.order = SPI_OPEN_ORDER_MSB_FIRST;
+	prm.role = SPI_OPEN_ROLE_MASTER;
+	prm.mode = SPI_OPEN_MODE_0;
+	prm.div = SPI_OPEN_DIV_4;
+	prm.speed = SPI_OPEN_SPEED_X2;
+	spiOpen(&prm);
 	intLcd();
 	lcdST7735R_fillRect(0x0000, 0, 0, LCD_ST7735R_WIDTH, LCD_ST7735R_HEIGHT);
 }
@@ -70,29 +80,12 @@ void lcdST7735R_fillRect(uint16_t color, uint8_t x0, uint8_t y0, uint8_t x1, uin
 	ENABLE_LCD_CS;
 	for (uint8_t x=0; x < width; x++) {
 		for (uint8_t y=0; y < height; y++) {
-			spiSend(color >> 8);
-			spiSend(color);
+			spiSendBlocking(color >> 8);
+			spiSendBlocking(color);
 		}
 	}
 	DISABLE_LCD_CS;
 	lcdST7735R_setAddrWindowFull();
-	/*
-	volatile uint8_t buffer[height];
-	
-	for(uint8_t i = 0; i < height; i+=2){
-		buffer[i] = color >> 8;
-		buffer[i+1] = color;
-	}
-	
-	
-	for (uint8_t x=0; x < width; x++) {
-		for (uint8_t y=0; y < 2; y++) {
-			spiSendBurst(buffer, height);
-		}
-	}
-	waitBurstEnd();
-	*/
-
 }
 
 
@@ -103,14 +96,13 @@ void lcdST7735R_startSendBurstData()
 	ENABLE_LCD_CS;
 }
 
-// memo: make this function macro for speedup
-/*
-void lcdST7735R_sendBurstData(uint8_t dataHigh, uint8_t dataLow)
+
+inline void lcdST7735R_sendBurstData(uint8_t dataHigh, uint8_t dataLow)
 {
-	spiSend(dataHigh);
-	spiSend(dataLow);
+	spiSendBlocking(dataHigh);
+	spiSendBlocking(dataLow);
 }
-*/
+
 
 void lcdST7735R_stopSendBurstData()
 {
@@ -170,11 +162,12 @@ void lcdST7735R_setRasterHorizontal()
 }
 
 
+/*** Internal Function Definitions ***/
 static void sendCmd(uint8_t cmd)
 {
 	SET_LCD_CMD;
 	ENABLE_LCD_CS;
-	spiSend(cmd);
+	spiSendBlocking(cmd);
 	DISABLE_LCD_CS;
 }
 
@@ -182,7 +175,7 @@ static void sendData(uint8_t data)
 {
 	SET_LCD_DATA;
 	ENABLE_LCD_CS;
-	spiSend(data);
+	spiSendBlocking(data);
 	DISABLE_LCD_CS;
 }
 

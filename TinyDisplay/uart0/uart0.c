@@ -6,44 +6,58 @@
  *    Note: Asynchronous Normal mode fixed
  *          8bit, 2-bit stop bit, no parity
  */ 
-
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "../myCommon.h"
-
 #include "uart0Config.h"
 #include "uart0.h"
 
-#ifndef UART_DOUBLE
-#define UBRR0_CALC (F_CPU/16/UART0_BAUD - 1)
-#else
-#define UBRR0_CALC (F_CPU/8/UART0_BAUD - 1)
-#endif
+/*** Internal Const Values ***/
 
+/*** Internal Static Variables ***/
 static volatile uint8_t s_usartRecvBuffer[SOFTWARE_BUFFER_SIZE];
 static volatile uint8_t s_usartRecvWrite = 0;
 static volatile uint8_t s_usartRecvRead = 0;
 static volatile uint8_t s_usartSendBuffer[SOFTWARE_BUFFER_SIZE];
 static volatile uint8_t s_usartSendWrite = 0;
 static volatile uint8_t s_usartSendRead = 0;
-
+static uint8_t s_isUsing = 0;
+/*** Internal Function Declarations ***/
 static void uart0SendSetRegister();
 
-void uart0Init()
+/*** External Function Defines ***/
+RET uart0Open(UART_OPEN_PRM *prm)
 {
-	/* Set Baud Rate */
-	UBRR0H = (uint8_t)(UBRR0_CALC>>8);
-	UBRR0L = (uint8_t)UBRR0_CALC;
-	
-	// enable double speed
-#ifdef UART_DOUBLE
-	UCSR0A |= (1<<U2X0);
-#endif
+	if(s_isUsing != 0) return RET_ERR_CONFLICT;
+	s_isUsing = 1;
+	/* Set Baud Rate (calc as using double speed) */
+	uint16_t ubrr = 0;
+	switch(prm->speed){
+		default:
+		case UART_OPEN_SPEED_9600: ubrr = F_CPU/8/9600 - 1; break;
+		case UART_OPEN_SPEED_19200: ubrr = F_CPU/8/19200 - 1; break;
+		case UART_OPEN_SPEED_38400: ubrr = F_CPU/8/38400 - 1; break;
+		case UART_OPEN_SPEED_115200: ubrr = F_CPU/8/115200 - 1; break;
+		case UART_OPEN_SPEED_1M: ubrr = F_CPU/8/1000000 - 1; break;
+		case UART_OPEN_SPEED_2M: ubrr = F_CPU/8/2000000 - 1; break;
+	} 	
+	UBRR0H = (uint8_t)(ubrr>>8);
+	UBRR0L = (uint8_t)(ubrr&0xff);
+	UCSR0A |= (1<<U2X0);	// enable double speed
+
 	/* Enable Tx, RX, Tx INT, Rx INT */
 	UCSR0B = (1<<RXEN0) | (1<<TXEN0) | (1<<RXCIE0) | (1<<TXCIE0);
 
 	/* Asynchronous, 2 stop bits */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	
+	return RET_OK;
+}
+
+RET uart0Close()
+{
+	s_isUsing = 0;
+	return RET_OK;
 }
 
 void uart0Send( uint8_t data )
@@ -70,6 +84,7 @@ uint8_t uart0Recv()
 }
 
 
+/*** Internal Function Definitions ***/
 static void uart0SendSetRegister()
 {
 	if (s_usartSendWrite != s_usartSendRead){

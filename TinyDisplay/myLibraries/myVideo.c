@@ -4,24 +4,29 @@
  * Created: 2016-03-05 2:22:51 AM
  *  Author: take-iwiw
  */ 
-
-
 #include <avr/io.h>
+#include "../myCommon.h"
 #include "myRetarget.h"
-
 #include "myVideo.h"
+#include "myTimer.h"
 
 #ifdef USE_LCD_ST7735R_VIDEO
 #include "../lcdST7735R_SPI/lcdST7735R_SPI.h"
 #endif
 
+/*** Internal Const Values ***/
+
+/*** Internal Static Variables ***/
 static uint8_t s_width;
 static uint8_t s_height;
 static uint8_t s_currentLine;
 static uint16_t s_frameStartTimeMS;
-
+#ifdef SUPPORT_LINE_BUFFER
 static uint8_t s_buffer[VIDEO_LINE_BUFFER_SIZE];
+#endif
 
+/*** Internal Function Declarations ***/
+/*** External Function Defines ***/
 void videoInit()
 {
 #ifdef USE_LCD_ST7735R_VIDEO
@@ -63,26 +68,6 @@ uint16_t stopFrame()
 	return realFrameTime;
 }
 
-void drawLineBuffer(uint8_t lineNum)
-{
-#ifdef USE_LCD_ST7735R_VIDEO
-	//lcdST7735R_restartSendBurstData();
-#endif
-
-	uint8_t* buffer = s_buffer;
-
-#ifdef USE_LCD_ST7735R_VIDEO
-	for(uint8_t x = 0; x < s_width; x++ ) {
-		lcdST7735R_sendBurstData(*buffer++, *buffer++);
-	}
-#endif
-	s_currentLine+=lineNum;
-	
-#ifdef USE_LCD_ST7735R_VIDEO
-	//lcdST7735R_pauseSendBurstData();
-#endif
-}
-
 void drawPixel(uint8_t dataHigh, uint8_t dataLow)
 {
 #ifdef USE_LCD_ST7735R_VIDEO
@@ -90,7 +75,28 @@ void drawPixel(uint8_t dataHigh, uint8_t dataLow)
 #endif
 }
 
+#ifdef SUPPORT_LINE_BUFFER
+void drawLineBuffer(uint8_t lineNum)
+{
+#ifdef USE_LCD_ST7735R_VIDEO
+	//lcdST7735R_restartSendBurstData();
+#endif
+
+	uint8_t* buffer = s_buffer;
+	for(uint8_t x = 0; x < s_width; x++ ) {
+		drawPixel(*buffer++, *buffer++);
+	}
+	s_currentLine+=lineNum;
+	
+#ifdef USE_LCD_ST7735R_VIDEO
+	//lcdST7735R_pauseSendBurstData();
+#endif
+}
+
 uint8_t* getLineBuffer()
 {
 	return s_buffer;
 }
+#endif
+
+/*** Internal Function Definitions ***/

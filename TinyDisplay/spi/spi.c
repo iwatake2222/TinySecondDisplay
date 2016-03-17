@@ -6,86 +6,85 @@
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 #include "../myCommon.h"
 #include "spiConfig.h"
 #include "spi.h"
 
-
-static uint8_t s_isUsing = 0;
+/*** Internal Const Values ***/
+/*** Internal Static Variables ***/
+static uint8_t s_IsUsing = 0;
 static volatile uint8_t s_spiRecvBuffer[SOFTWARE_BUFFER_SIZE];
 static volatile uint8_t s_spiRecvWrite = 0;
 static volatile uint8_t s_spiRecvRead = 0;
-static volatile uint8_t *sp_spiSendBuffer;
+static volatile uint8_t s_spiSendBuffer[SOFTWARE_BUFFER_SIZE];
 static volatile uint8_t s_spiSendWrite = 0;
 static volatile uint8_t s_spiSendRead = 0;
+volatile uint8_t s_isSending = 0;	// do not support multi core
+/*** Internal Function Declarations ***/
+static void spiSendSetRegister();
 
-
-
-void spiOpen(uint8_t isLsbFirst, uint8_t isMaster, uint8_t mode, uint8_t div, uint8_t isDouble)
+/*** External Function Defines ***/
+RET spiOpen(SPI_OPEN_PRM *prm)
 {
-	while(s_isUsing != 0);
-	s_isUsing = 1;
+	if(s_IsUsing != 0) return RET_ERR_CONFLICT;
+	s_IsUsing = 1;
 	
+	/* io settings */
 	SET_BIT(SPI_DDR, SPI_MOSI_BIT);
 	CLR_BIT(SPI_DDR, SPI_MISO_BIT);
 	SET_BIT(SPI_DDR, SPI_SCK_BIT);
 	
-	uint8_t spcr = (1<<SPE) | ((isLsbFirst!=0)<<DORD) | ((isMaster!=0)<<MSTR) | (mode<<CPHA) | div;
-
+	/* spi settings */
+	uint8_t isLsbFirst = (prm->order == SPI_OPEN_ORDER_LSB_FIRST) ? 1 : 0;
+	uint8_t isMaster = (prm->role == SPI_OPEN_ROLE_MASTER) ? 1 : 0;
+	uint8_t mode = prm->mode & 0x03;
+	uint8_t div = prm->div & 0x03;
+	uint8_t isDouble = (prm->speed == SPI_OPEN_SPEED_X2) ? 1 : 0;
+	uint8_t useInterrupt = (prm->blocking == SPI_OPEN_BLOCKING_NO) ? 1 : 0;
+	
+	uint8_t spcr = (useInterrupt<<SPIE) | (1<<SPE) | (isLsbFirst<<DORD) | (isMaster<<MSTR) | (mode<<CPHA) | div;
 	SPCR = spcr;
 	SPSR |= (isDouble == 0 ? 0 : 1);
-}
-
-void spiClose()
-{
-	s_isUsing = 0;
-}
-
-static void uart0SendSetRegister()
-{
-	s_spiRecvBuffer[s_spiRecvWrite++] = SPDR;
-	if (s_spiSendWrite != s_spiSendRead){
-		SPDR = sp_spiSendBuffer[s_spiSendRead++];
-	} else {
-		SPCR &= ~(1<<SPIE);		
-		s_spiSendRead = 0;
-		s_spiSendWrite = 0;
-	}
-
-}
-
-// seems interrupt handler is heavy (stack store). but, it happens every 8 clock
-void spiSendBurst(uint8_t *data, uint8_t size)
-{
-	if( size > SOFTWARE_BUFFER_SIZE) return;
 	
-	//uint8_t dummy = SPSR; dummy = SPDR;	// clear SPIF not to cause Interrupt when set SPIE
-	while( s_spiSendWrite != 0);
-	sp_spiSendBuffer = data;
-	SPCR |= (1<<SPIE);
-	s_spiSendWrite = size;
-	s_spiSendRead = 0;
+	/* control software initialize */
 	s_spiRecvWrite = 0;
 	s_spiRecvRead = 0;
-	uart0SendSetRegister();
+	s_spiSendWrite = 0;
+	s_spiSendRead = 0;
+	s_isSending = 0;
+	return RET_OK;
 }
 
-void waitBurstEnd()
+RET spiClose()
 {
-	while( s_spiSendWrite != 0);
+	while(s_isSending);
+	SPCR = 0;
+	s_IsUsing = 0;
+	return RET_OK;
 }
 
 
-void spiSend(uint8_t data)
+void spiSendFast(uint8_t data)
 {
-	while( s_spiSendWrite != 0);
+	while(((s_spiSendWrite + 1) & (SOFTWARE_BUFFER_SIZE-1)) == s_spiSendRead);
+	s_spiSendBuffer[s_spiSendWrite++] = data;
+	s_spiSendWrite &= (SOFTWARE_BUFFER_SIZE-1);
+	if( !s_isSending ){
+		s_isSending = 1;	
+		spiSendSetRegister();
+	}
+}
+
+
+inline void spiSendBlocking(uint8_t data)
+{
 	SPDR = data;
 	while(!(SPSR & (1<<SPIF)));
 }
 
 uint8_t spiRecv()
 {
-	while( s_spiSendWrite != 0);
 	uint8_t data;
 	SPDR = 0;
 	while(!(SPSR & (1<<SPIF)));
@@ -95,15 +94,24 @@ uint8_t spiRecv()
 
 uint8_t spiSendRecv(uint8_t data)
 {
-	while( s_spiSendWrite != 0);
 	SPDR = data;
 	while(!(SPSR & (1<<SPIF)));
 	data = SPDR;
 	return data;
 }
 
+/*** Internal Function Definitions ***/
+static void spiSendSetRegister()
+{
+	if (s_spiSendWrite != s_spiSendRead){
+		SPDR = s_spiSendBuffer[s_spiSendRead++];
+		s_spiSendRead &= (SOFTWARE_BUFFER_SIZE-1);		
+	} else {
+		s_isSending = 0;
+	}
+}
 
 ISR(SPI_STC_vect)
 {
-	uart0SendSetRegister();
+	spiSendSetRegister();	
 }

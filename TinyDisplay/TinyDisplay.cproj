@@ -55,6 +55,18 @@
     </com_atmel_avrdbg_tool_stk500>
     <avrtoolinterface>ISP</avrtoolinterface>
     <avrtoolinterfaceclock>125000</avrtoolinterfaceclock>
+    <com_atmel_avrdbg_tool_simulator>
+      <ToolOptions xmlns="">
+        <InterfaceProperties>
+        </InterfaceProperties>
+        <InterfaceName>
+        </InterfaceName>
+      </ToolOptions>
+      <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
+      <ToolNumber xmlns="">
+      </ToolNumber>
+      <ToolName xmlns="">Simulator</ToolName>
+    </com_atmel_avrdbg_tool_simulator>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -135,6 +147,27 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="accelADXL345\accelADXL345.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="accelADXL345\accelADXL345.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="accelADXL345\accelADXL345Config.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc\adc.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="adc\adc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="application\application.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="application\deviceTrial.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="application\fpsCheck.c">
       <SubType>compile</SubType>
     </Compile>
@@ -162,6 +195,21 @@
     <Compile Include="font\font.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="i2c\i2c.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="i2c\i2c.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="keys\keys.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="keys\keys.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="keys\keysConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lcdST7735R_SPI\lcdST7735R_CMD.h">
       <SubType>compile</SubType>
     </Compile>
@@ -181,6 +229,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myInput.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="myLibraries\myInput.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="myLibraries\myRetarget.h">
@@ -228,6 +282,15 @@
     <Compile Include="petitFatFS\sdmmc_spi.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="rotaryEncoder\rotaryEncoder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rotaryEncoder\rotaryEncoder.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="rotaryEncoder\rotaryEncoderConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="spi\spi.c">
       <SubType>compile</SubType>
     </Compile>
@@ -235,6 +298,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="spi\spiConfig.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="system\taskManager.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="system\taskManager.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timer0System\timer0System.c">
@@ -260,6 +329,9 @@
     <None Include="petitFatFS\00readme.txt">
       <SubType>compile</SubType>
     </None>
+    <None Include="port.txt">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="charLcd" />
@@ -268,6 +340,12 @@
     <Folder Include="font" />
     <Folder Include="color" />
     <Folder Include="application" />
+    <Folder Include="keys" />
+    <Folder Include="adc" />
+    <Folder Include="i2c" />
+    <Folder Include="accelADXL345" />
+    <Folder Include="system" />
+    <Folder Include="rotaryEncoder" />
     <Folder Include="petitFatFS" />
     <Folder Include="spi" />
     <Folder Include="timer0System" />

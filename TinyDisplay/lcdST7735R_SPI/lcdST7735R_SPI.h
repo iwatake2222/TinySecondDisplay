@@ -9,10 +9,23 @@
 #ifndef LCDST7735R_SPI_H_
 #define LCDST7735R_SPI_H_
 
-#include "../spi/spi.h"
+/***
+ * Const values
+ ***/
 
+/***
+ * Enum definitions
+ ***/
+
+/***
+ * Struct definitions
+ ***/
+
+/***
+ * External APIs
+ ***/
 void lcdST7735R_init();
-// actual x1, y1 is -1 smaller
+// size becomes x0 to x1 - 1, y0 to y1 - 1
 void lcdST7735R_fillRect(uint16_t color, uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) ;
 void lcdST7735R_setAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1);
 void lcdST7735R_setRasterHorizontal();
@@ -20,8 +33,7 @@ void lcdST7735R_setRasterVertical();
 
 void lcdST7735R_startSendBurstData();
 void lcdST7735R_stopSendBurstData();
-//void startSendBurstData(uint8_t dataHigh, uint8_t dataLow)
-#define lcdST7735R_sendBurstData(dataHigh, dataLow) {spiSend(dataHigh); spiSend(dataLow);}
+void lcdST7735R_sendBurstData(uint8_t dataHigh, uint8_t dataLow);
 void lcdST7735R_pauseSendBurstData();
 void lcdST7735R_restartSendBurstData();
 
