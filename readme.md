@@ -8,7 +8,12 @@ Link to youtube is bellow:
 <img src="01_doc/picture_01.jpg" alt="代替テキスト" height="300px">
 
 ## Environment
-* Atmel Studio 7.0
+* Atmel Studio 7.0  
+or
+* avr-gcc (makefile)
+	* make
+	* sudo avrdude -c avrispv2 -P /dev/ttyACM0 -p m328p -U flash:w:hello.out:e
+
 
 ## Devices
 * ATmega328P (not arduino)
